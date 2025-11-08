@@ -1,105 +1,91 @@
 # FinX Academy
 
-Plateforme web gamifiée d'apprentissage de la finance d'entreprise, de la finance de marché et de la stratégie.
+Plateforme premium orientée finance qui combine parcours de formation, simulations d’entretien IA et progression gamifiée. L’objectif : permettre aux étudiants et jeunes professionnels de pratiquer la finance corporate & marché dans une interface inspirée des dashboards fintech haut de gamme.
 
-## 🚀 Technologies
+## 🚀 Stack & Design
 
-- **Next.js 14** avec App Router
-- **TypeScript** pour la sécurité des types
-- **Tailwind CSS** pour le styling
-- **React 18** pour l'interface utilisateur
+- **Next.js 14** (App Router) + **React 18**
+- **TypeScript**, **Tailwind CSS**, **Framer Motion**
+- **Supabase** (auth, SQL, storage) pour les données utilisateurs, interviews et wallet
+- **OpenAI** (GPT‑4o mini) pour la transcription, l’analyse verbale et visuelle des entretiens
+- Identité visuelle : fond clair, accents bleu FinX `#3F76FF`, or `#F5B700`, typographie Inter
 
-## 🎨 Design
+## ✨ Fonctionnalités principales
 
-- **Palette de couleurs** :
-  - Primary: `#0A2540` (bleu foncé)
-  - Accent: `#F5B301` (or)
-  - Background: `#F9FAFB` (fond clair)
-- **Police** : Inter / Poppins
-- **Style** : Minimaliste, épuré, professionnel et motivant
+- **Parcours de formation** : modules corporate & marché avec cartes `TrackCard`, progression verrouillée, contenu de cours, quiz et examens.
+- **Dashboard personnalisé** : synthèse XP/niveau, modules en cours, badges débloqués, statistiques dynamiques, suivi weekly.
+- **Entretien IA** :
+  - Page `/entretien-ia` type plateforme, sélection de métiers par thèmes
+  - Simulation vidéo `/entretien-ia/simulation` avec caméra, enregistrement `MediaRecorder`, compte à rebours, multiples tentatives
+  - Analyse verbale + visuelle (posture, regard, attire) via endpoints `analyze-interview` & `interviews/analyze-visuals`
+  - Stockage des runs, vidéos, snapshots et feedbacks dans Supabase + restitution sur `/entretien-ia/feedback`
+- **FinX Wallet** : tables SQL dédiées (`wallet_accounts`, `wallet_transactions`), API (`/api/wallet/summary|transactions`), hooks SWR et UI (dashboard + page `/wallet`) pour suivre crédits/bonus.
 
-## 📁 Structure du Projet
+## 📁 Structure
 
 ```
 FinX Academy/
-├── app/                    # Pages Next.js (App Router)
-│   ├── page.tsx           # Page d'accueil
-│   ├── parcours/          # Pages parcours
-│   ├── lecon/             # Pages leçons
-│   ├── dashboard/         # Dashboard utilisateur
-│   └── profil/            # Profil et badges
-├── components/            # Composants réutilisables
-│   ├── Navbar.tsx
-│   ├── Footer.tsx
-│   ├── CourseCard.tsx
-│   ├── ModuleAccordion.tsx
-│   ├── LessonContent.tsx
-│   ├── Quiz.tsx
-│   ├── ProgressBar.tsx
-│   └── LevelIndicator.tsx
-├── data/                  # Données et contenu
-├── types/                 # Types TypeScript
-└── public/                # Assets statiques
+├── app/
+│   ├── page.tsx                   # Landing Apple/Stripe-like
+│   ├── dashboard/page.tsx         # Dashboard connecté à Supabase
+│   ├── parcours/page.tsx          # Sélecteur de thèmes & modules
+│   ├── entretien-ia/              # Thèmes, simulation, feedback
+│   ├── wallet/page.tsx            # Pilotage du FinX Wallet
+│   ├── modules/...                # Contenu pédagogique détaillé
+│   └── api/...                    # Routes API (OpenAI, Supabase)
+├── components/                    # UI réutilisable (TrackCard, etc.)
+├── data/                          # Données statiques (jobs, quiz…)
+├── hooks/                         # Hooks Supabase/SWR (progress, wallet…)
+├── lib/                           # Helpers (gamification, supabase)
+└── supabase/                      # Scripts SQL (interviews, wallet…)
 ```
+
+## ⚙️ Prérequis & Variables
+
+Créer un `.env.local` avec :
+
+```
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=...
+SUPABASE_SERVICE_ROLE_KEY=...      # pour scripts/cron si nécessaire
+OPENAI_API_KEY=...
+```
+
+Utiliser les scripts SQL dans `supabase/*.sql` pour provisionner les tables (interviews, wallet, progression, etc.) et créer le bucket `interview-recordings`.
 
 ## 🚦 Démarrage
 
-1. Installer les dépendances :
 ```bash
 npm install
-```
-
-2. Lancer le serveur de développement :
-```bash
 npm run dev
 ```
 
-3. Ouvrir [http://localhost:3000](http://localhost:3000) dans votre navigateur
+Ouvrir [http://localhost:3000](http://localhost:3000).
 
-## 📝 Pages Disponibles
+### Scripts utiles
 
-- `/` - Page d'accueil avec présentation de la plateforme
-- `/parcours` - Liste de tous les parcours disponibles
-- `/parcours/[slug]` - Détails d'un parcours spécifique
-- `/lecon/[lessonId]` - Contenu d'une leçon avec quiz
-- `/dashboard` - Tableau de bord utilisateur avec progression
-- `/profil` - Profil utilisateur, badges et statistiques
+- `npm run lint` – qualité du code
+- `npm run build` – build production
+- `npm start` – serveur Next.js en mode production
 
-## 🎯 Fonctionnalités
+## 🔌 Endpoints API clés
 
-- ✅ Système de parcours avec modules et leçons
-- ✅ Quiz interactifs pour valider les connaissances
-- ✅ Système de progression et XP
-- ✅ Badges et récompenses
-- ✅ Dashboard pour suivre l'avancement
-- ✅ Design responsive et moderne
-- ✅ Animations et transitions douces
+- `POST /api/transcribe` – audio → texte (OpenAI Whisper)
+- `POST /api/analyze-interview` – analyse verbale structurée (JSON schema)
+- `POST /api/interviews/analyze-visuals` – feedback non verbal via snapshot
+- `GET /api/wallet/summary` / `GET|POST /api/wallet/transactions` – wallet Supabase RPC
 
-## 🎨 Composants Principaux
+## 📸 Pages principales
 
-- **Navbar** : Navigation principale avec liens vers les différentes sections
-- **Footer** : Pied de page avec liens et informations
-- **CourseCard** : Carte présentant un parcours
-- **ModuleAccordion** : Module avec leçons dépliables
-- **LessonContent** : Contenu d'une leçon avec sections
-- **Quiz** : Quiz interactif avec validation
-- **ProgressBar** : Barre de progression
-- **LevelIndicator** : Indicateur de niveau et XP
-
-## 📦 Build
-
-```bash
-npm run build
-npm start
-```
-
-## 🔧 Développement
-
-- Linter : `npm run lint`
-- Build : `npm run build`
-- Production : `npm start`
+- `/` : landing premium
+- `/parcours` : navigation par thèmes, cartes `TrackCard`
+- `/entretien-ia` : sélection métiers, liens vers simulation
+- `/entretien-ia/simulation` : interface style HireVue
+- `/entretien-ia/feedback` : restitution feedbacks IA
+- `/dashboard` : vue utilisateur personnalisée
+- `/wallet` : solde, breakdown et historique crédit
 
 ---
 
-Créé avec ❤️ pour l'apprentissage de la finance de manière gamifiée
+FinX Academy – apprendre, pratiquer et performer la finance augmentée par l’IA.***
 
