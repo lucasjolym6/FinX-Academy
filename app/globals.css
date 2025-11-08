@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Swiper custom styles */
+.swiper-pagination-bullet {
+  background: #0A2540 !important;
+  opacity: 0.3 !important;
+}
+
+.swiper-pagination-bullet-active {
+  background: #0A2540 !important;
+  opacity: 1 !important;
+}
+
+.swiper-pagination {
+  position: relative !important;
+  margin-top: 2rem !important;
+}
+
+:root {
+  --primary-color: #0A2540;
+  --accent-color: #F5B301;
+  --background-color: #F9FAFB;
+}
+
+body {
+  color: var(--primary-color);
+  background: var(--background-color);
+  font-family: 'Inter', 'Poppins', system-ui, sans-serif;
+}
+
+@layer base {
+  * {
+    @apply transition-all duration-300;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .hover-scale {
+    @apply hover:scale-105;
+  }
+  
+  .hover-lift {
+    @apply hover:-translate-y-1;
+  }
+}
+
+/* Animations pour XPAnimation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.4s ease-out;
+}
+
+/* Animation pour les points lumineux */
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.5);
+  }
+}
+
