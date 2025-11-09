@@ -99,8 +99,8 @@ function FeedbackContent() {
 
   useEffect(() => {
     const fallbackFromSession = () => {
-      const data = sessionStorage.getItem("interview_feedback");
-      if (data) {
+    const data = sessionStorage.getItem("interview_feedback");
+    if (data) {
         try {
           const parsed = JSON.parse(data);
           const responses: ResponseDetail[] = parsed.responses ?? (parsed.questions ?? []).map((question: string, index: number) => ({
@@ -236,7 +236,7 @@ function FeedbackContent() {
         if (cancelled) return;
         console.error("Erreur inattendue feedback", error);
         setFetchError("Erreur inattendue lors du chargement de la simulation.");
-        setIsLoading(false);
+    setIsLoading(false);
       }
     };
 
@@ -477,7 +477,7 @@ function FeedbackContent() {
         </motion.div>
 
         {feedback.perQuestion && feedback.perQuestion.length > 0 && (
-          <motion.div
+        <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.45 }}
@@ -568,6 +568,7 @@ function FeedbackContent() {
                 >
                   <div className="flex flex-col items-center gap-3">
                     {response.snapshotUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={response.snapshotUrl}
                         alt={`Capture question ${response.questionIndex + 1}`}
@@ -692,7 +693,7 @@ function FeedbackContent() {
                 </div>
               ))}
             </div>
-          </motion.div>
+        </motion.div>
         )}
       </div>
     </main>

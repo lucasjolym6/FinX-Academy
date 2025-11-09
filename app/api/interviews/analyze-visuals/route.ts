@@ -57,7 +57,10 @@ export async function POST(request: Request) {
         {
           role: "user",
           content: [
-            { type: "text", text: prompt },
+            {
+              type: "input_text",
+              text: prompt,
+            },
             {
               type: "input_image",
               image_base64: base64Image,
@@ -73,29 +76,38 @@ export async function POST(request: Request) {
           schema: visualSchema,
         },
       },
-    });
+    } as any);
 
-    let rawText = "";
-    if (Array.isArray(response.output) && response.output.length > 0) {
-      const firstOutput = response.output[0];
-      if (firstOutput.content && firstOutput.content.length > 0) {
-        const maybeText = firstOutput.content.find((item: any) => item.type === "output_text");
-        if (maybeText && typeof maybeText.text === "string") {
-          rawText = maybeText.text;
+    let visualFeedback: unknown = null;
+    const messageOutput = response?.output?.find(
+      (item) => item.type === "message"
+    ) as { type: "message"; content: Array<any> } | undefined;
+
+    const contents: Array<any> | undefined = messageOutput?.content;
+
+    if (Array.isArray(contents)) {
+      for (const item of contents) {
+        if (item?.type === "json_schema" && item.json) {
+          visualFeedback = item.json;
+          break;
+        }
+        if (item?.type === "output_text" && typeof item.text === "string") {
+          try {
+            visualFeedback = JSON.parse(item.text);
+          } catch (error) {
+            console.error("Parse visual feedback output_text", error, item.text.slice(0, 200));
+          }
+          break;
         }
       }
     }
 
-    if (!rawText && Array.isArray(response.output_text) && response.output_text.length > 0) {
-      rawText = response.output_text.join("\n");
-    }
-
-    let visualFeedback: any = null;
-    if (rawText) {
+    if (!visualFeedback && Array.isArray(response?.output_text) && response.output_text.length > 0) {
+      const joined = response.output_text.join("\n");
       try {
-        visualFeedback = JSON.parse(rawText);
+        visualFeedback = JSON.parse(joined);
       } catch (error) {
-        console.error("Parse visual feedback", error, rawText.slice(0, 200));
+        console.error("Parse visual feedback fallback", error, joined.slice(0, 200));
       }
     }
 
